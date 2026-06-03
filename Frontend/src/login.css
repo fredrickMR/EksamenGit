@@ -1,0 +1,35 @@
+.loginpage{
+    background-color: black;
+    color:white;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+}
+
+.loginplate button{
+    padding: 10px;
+    border: 1px solid whitesmoke;
+    border-radius: 5px;
+}
+
+.loginplate input{
+    padding: 10px;
+    border: 1px solid whitesmoke;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.loginplate{
+    width: 300px;
+    height: 300px;
+    padding: 30px;
+    border: 1px solid rgb(63, 61, 61);
+    border-radius: 15px;
+    background-color: rgb(63, 61, 61);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+
