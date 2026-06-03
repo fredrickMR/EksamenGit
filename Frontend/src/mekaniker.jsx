@@ -106,4 +106,4 @@ const td = {
     padding: "0.75rem 1rem"
 };
 
-export default Mekaniker;
+export default mekaniker;
