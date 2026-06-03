@@ -261,6 +261,243 @@ app.delete('/api/kunde/delete/:id', ReadAuth, async(req, res) => {
     }
 })
 
+app.get('/api/bil/getall', ReadAuth, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM bil');
+        res.json(result.rows);
+    } catch (error) {
+        console.error("GetAll bil failed", error);
+        res.status(500).json("Getall bil failed");
+    }
+});
+
+app.get('/api/bil/get/:registreringsnummer', ReadAuth, async (req, res) => {
+    try {
+        const bil_reg = req.params.registreringsnummer;
+
+        const result = await pool.query(
+            'SELECT * FROM bil WHERE bil_registreringsnummer = $1',
+            [bil_reg]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json("Bil ikke funnet");
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Get bil failed", error);
+        res.status(500).json("Get bil failed");
+    }
+});
+
+app.post('/api/bil/post', ReadAuth, async (req, res) => {
+    try {
+        const { bil_registreringsnummer, modell_navn, eier_id } = req.body;
+
+        const result = await pool.query(
+            'INSERT INTO bil (bil_registreringsnummer, modell_navn, eier_id) VALUES ($1, $2, $3) RETURNING *',
+            [bil_registreringsnummer, modell_navn, eier_id]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Post bil failed", error);
+        res.status(500).json("Post bil failed");
+    }
+});
+
+app.put('/api/bil/put/:registreringsnummer', ReadAuth, async (req, res) => {
+    try {
+        const bil_reg = req.params.registreringsnummer;
+        const { modell_navn, eier_id } = req.body;
+
+        const result = await pool.query(
+            'UPDATE bil SET modell_navn = $1, eier_id = $2 WHERE bil_registreringsnummer = $3 RETURNING *',
+            [modell_navn, eier_id, bil_reg]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Put bil failed", error);
+        res.status(500).json("Put bil failed");
+    }
+});
+
+app.delete('/api/bil/delete/:registreringsnummer', ReadAuth, async (req, res) => {
+    try {
+        const bil_reg = req.params.registreringsnummer;
+
+        const result = await pool.query(
+            'DELETE FROM bil WHERE bil_registreringsnummer = $1 RETURNING *',
+            [bil_reg]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Delete bil failed", error);
+        res.status(500).json("Delete bil failed");
+    }
+});
+
+app.get('/api/mekaniker/getall', ReadAuth, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM mekaniker');
+        res.json(result.rows);
+    } catch (error) {
+        console.error("GetAll mekaniker failed", error);
+        res.status(500).json("Getall mekaniker failed");
+    }
+});
+
+app.get('/api/mekaniker/get/:id', ReadAuth, async (req, res) => {
+    try {
+        const mekaniker_id = req.params.id;
+
+        const result = await pool.query(
+            'SELECT * FROM mekaniker WHERE mekaniker_id = $1',
+            [mekaniker_id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json("Mekaniker ikke funnet");
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Get mekaniker failed", error);
+        res.status(500).json("Get mekaniker failed");
+    }
+});
+
+app.post('/api/mekaniker/post', ReadAuth, async (req, res) => {
+    try {
+        const { navn } = req.body;
+
+        const result = await pool.query(
+            'INSERT INTO mekaniker (navn) VALUES ($1) RETURNING *',
+            [navn]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Post mekaniker failed", error);
+        res.status(500).json("Post mekaniker failed");
+    }
+});
+
+app.put('/api/mekaniker/put/:id', ReadAuth, async (req, res) => {
+    try {
+        const mekaniker_id = req.params.id;
+        const { navn } = req.body;
+
+        const result = await pool.query(
+            'UPDATE mekaniker SET navn = $1 WHERE mekaniker_id = $2 RETURNING *',
+            [navn, mekaniker_id]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Put mekaniker failed", error);
+        res.status(500).json("Put mekaniker failed");
+    }
+});
+
+app.delete('/api/mekaniker/delete/:id', ReadAuth, async (req, res) => {
+    try {
+        const mekaniker_id = req.params.id;
+
+        const result = await pool.query(
+            'DELETE FROM mekaniker WHERE mekaniker_id = $1 RETURNING *',
+            [mekaniker_id]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Delete mekaniker failed", error);
+        res.status(500).json("Delete mekaniker failed");
+    }
+});
+
+app.get('/api/service/getall', ReadAuth, async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM service');
+        res.json(result.rows);
+    } catch (error) {
+        console.error("GetAll service failed", error);
+        res.status(500).json("Getall service failed");
+    }
+});
+
+app.get('/api/service/get/:id', ReadAuth, async (req, res) => {
+    try {
+        const service_id = req.params.id;
+
+        const result = await pool.query(
+            'SELECT * FROM service WHERE service_id = $1',
+            [service_id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json("Service ikke funnet");
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Get service failed", error);
+        res.status(500).json("Get service failed");
+    }
+});
+
+app.post('/api/service/post', ReadAuth, async (req, res) => {
+    try {
+        const { bil, mekaniker } = req.body;
+
+        const result = await pool.query(
+            'INSERT INTO service (bil, mekaniker) VALUES ($1, $2) RETURNING *',
+            [bil, mekaniker]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Post service failed", error);
+        res.status(500).json("Post service failed");
+    }
+});
+
+app.put('/api/service/put/:id', ReadAuth, async (req, res) => {
+    try {
+        const service_id = req.params.id;
+        const { bil, mekaniker } = req.body;
+
+        const result = await pool.query(
+            'UPDATE service SET bil = $1, mekaniker = $2 WHERE service_id = $3 RETURNING *',
+            [bil, mekaniker, service_id]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Put service failed", error);
+        res.status(500).json("Put service failed");
+    }
+});
+
+app.delete('/api/service/delete/:id', ReadAuth, async (req, res) => {
+    try {
+        const service_id = req.params.id;
+
+        const result = await pool.query(
+            'DELETE FROM service WHERE service_id = $1 RETURNING *',
+            [service_id]
+        );
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Delete service failed", error);
+        res.status(500).json("Delete service failed");
+    }
+});
+
 app.listen(3000, "127.0.0.1", () => {
     console.log("Backend running")
 });
